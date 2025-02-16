@@ -1,11 +1,11 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
-import studentRoutes from './studentRoutes';
+import studentInfoRoute from './studentInfoRoute';
 
 export default async function routes(fastify: FastifyInstance) {
   fastify.get('/', async (request: FastifyRequest, reply: FastifyReply) => {
     return { message: 'GPA Monitoring Tool API is working!' };
   });
 
-  // Register student routes
-  fastify.register(studentRoutes, { prefix: '/students' });
+  // Register student info route
+  fastify.register(studentInfoRoute);
 }

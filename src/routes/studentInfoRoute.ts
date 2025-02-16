@@ -3,7 +3,7 @@ import { Student } from '../plugins/neon/entities/Student';
 import { neonDataSource } from '../plugins/neon/orm';
 
 const studentRepo = neonDataSource.getRepository(Student);
-export default async function studentRoutes(fastify: FastifyInstance) {
+export default async function studentInfoRoute(fastify: FastifyInstance) {
   /*/
   Retrieves the following information for all students:
   a.	Name
