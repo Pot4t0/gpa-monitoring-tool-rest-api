@@ -24,11 +24,15 @@ This repository contains the solution for the GovTech Technical Assessment for t
 
 ## Installation
 
-**Install Dependencies:**
+1. **Install Dependencies:**
 
 ```bash
 npm install
 ```
+
+1. **Add environment file:**
+
+.env file is added in source code that is submitted. Please place it in root directory so that the backend can connect to databse
 
 ## Running the Server Locally
 
