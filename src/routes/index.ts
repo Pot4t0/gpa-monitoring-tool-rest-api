@@ -8,7 +8,7 @@ export default async function routes(fastify: FastifyInstance) {
   });
 
   // Register student info route
-  fastify.register(studentInfoRoute);
+  fastify.register(studentInfoRoute, { prefix: '/students' });
 
   // Register student update route
   fastify.register(updateStudentTeacherRoute);
