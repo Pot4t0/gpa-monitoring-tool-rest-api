@@ -36,6 +36,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.13.4",
+    "@vercel/node": "^5.1.7",
     "nodemon": "^3.1.9",
     "pino-pretty": "^13.0.0",
     "ts-node": "^10.9.2",
