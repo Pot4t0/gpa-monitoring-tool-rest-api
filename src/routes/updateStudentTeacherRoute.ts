@@ -16,6 +16,70 @@ export default async function updateStudentTeacherRoute(
   /*/
   fastify.put(
     '/student/teacher',
+    {
+      schema: {
+        description:
+          'Reassign a student to a new teacher. Both studentId and newTeacherId must be provided in the request body. The update affects all past data.',
+        summary: 'Reassign a student to a new teacher',
+        body: {
+          type: 'object',
+          properties: {
+            studentId: { type: 'number', example: 1 },
+            newTeacherId: { type: 'number', example: 2 },
+          },
+          required: ['studentId', 'newTeacherId'],
+        },
+        response: {
+          200: {
+            description: 'Student reassigned successfully',
+            type: 'object',
+            properties: {
+              message: {
+                type: 'string',
+                example: 'Student reassigned successfully',
+              },
+              student: {
+                type: 'object',
+                properties: {
+                  studentId: { type: 'number', example: 1 },
+                  studentName: { type: 'string', example: 'Student One' },
+                },
+                required: ['studentId', 'studentName'],
+              },
+              newTeacher: {
+                type: 'object',
+                properties: {
+                  teacherId: { type: 'number', example: 2 },
+                  teacherName: { type: 'string', example: 'Bob Smith' },
+                },
+                required: ['teacherId', 'teacherName'],
+              },
+            },
+          },
+          400: {
+            description: 'Bad Request. Missing required fields.',
+            type: 'object',
+            properties: {
+              error: { type: 'string', example: 'newTeacherId is required' },
+            },
+          },
+          404: {
+            description: 'Either the student or teacher was not found.',
+            type: 'object',
+            properties: {
+              error: { type: 'string', example: 'Teacher not found' },
+            },
+          },
+          500: {
+            description: 'Internal Server Error',
+            type: 'object',
+            properties: {
+              error: { type: 'string', example: 'Internal Server Error' },
+            },
+          },
+        },
+      },
+    },
     async (request: FastifyRequest, reply: FastifyReply) => {
       // Extract student ID from route parameters and newTeacherId from the request body.
       const { studentId } = request.params as { studentId: number };
