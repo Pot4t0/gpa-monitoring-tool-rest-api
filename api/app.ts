@@ -4,16 +4,11 @@ import swagger from '@fastify/swagger';
 import fastifySwaggerUi from '@fastify/swagger-ui';
 import ormPlugin from './plugins/neon/orm';
 import 'dotenv/config';
+import { VercelRequest, VercelResponse } from '@vercel/node';
+import { IncomingMessage, ServerResponse } from 'http';
 
 const app = fastify({
   logger: {
-    transport: {
-      target: 'pino-pretty',
-      options: {
-        translateTime: 'HH:MM:ss Z',
-        ignore: 'pid,hostname',
-      },
-    },
     level: 'debug',
   },
   ajv: {
@@ -44,16 +39,15 @@ app.register(ormPlugin);
 // Register routes
 app.register(routes);
 
-const start = async () => {
+export default async (req: VercelRequest, res: VercelResponse) => {
   try {
     await app.ready();
     app.swagger();
-    await app.listen({ port: 3000, host: '0.0.0.0' });
-    app.log.info(`Server listening on port 3000`);
-  } catch (err) {
-    app.log.error(err);
-    process.exit(1);
+    // Forward the request to the Fastify instance
+    app.server.emit('request', req as IncomingMessage, res as ServerResponse);
+  } catch (error) {
+    console.error('Error handling request:', error);
+    res.statusCode = 500;
+    res.end('Internal Server Error');
   }
 };
-
-start();
