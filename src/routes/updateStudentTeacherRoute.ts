@@ -5,18 +5,20 @@ import { neonDataSource } from '../plugins/neon/orm';
 
 const studentRepo = neonDataSource.getRepository(Student);
 const teacherRepo = neonDataSource.getRepository(Teacher);
+
 export default async function updateStudentTeacherRoute(
   fastify: FastifyInstance
 ) {
   /*/
-  QUESTION 3
-  Update your data to assign a student from one teacher to another. This reassignment should affect all past data.
+  QUESTION 3:
+  Update your data to assign a student from one teacher to another.
+  This reassignment should affect all past data.
   /*/
   fastify.put(
-    '/:studentId/teacher',
+    '/student/teacher',
     async (request: FastifyRequest, reply: FastifyReply) => {
       // Extract student ID from route parameters and newTeacherId from the request body.
-      const { studentId } = request.params as { studentId: string };
+      const { studentId } = request.params as { studentId: number };
       const { newTeacherId } = request.body as { newTeacherId: number };
 
       // Validate the input.
@@ -35,8 +37,8 @@ export default async function updateStudentTeacherRoute(
 
         // Find the student by ID.
         const student = await studentRepo.findOne({
-          where: { studentId: parseInt(studentId, 10) },
-          relations: ['teacher'], // include teacher relation if needed
+          where: { studentId: studentId },
+          relations: ['teacher'],
         });
         if (!student) {
           return reply.status(404).send({ error: 'Student not found' });
@@ -46,9 +48,17 @@ export default async function updateStudentTeacherRoute(
         student.teacher = newTeacher;
         await studentRepo.save(student);
 
+        // Return a single JSON object containing all relevant info.
         return reply.send({
           message: 'Student reassigned successfully',
-          student,
+          student: {
+            studentId: student.studentId,
+            studentName: student.studentName,
+          },
+          newTeacher: {
+            teacherId: newTeacher.teacherId,
+            teacherName: newTeacher.teacherName,
+          },
         });
       } catch (error) {
         request.log.error(error);
